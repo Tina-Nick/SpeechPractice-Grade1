@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英検1級 二次試験お題ランダム＆タイマー</title>
+<style>
+  body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f0f0f0; }
+  h1 { font-size: 24px; margin-bottom: 20px; }
+  #topic { font-size: 20px; margin: 20px 0; background: white; padding: 15px; border-radius: 8px; }
+  button { font-size: 16px; padding: 10px 20px; margin: 10px; border-radius: 5px; }
+  #timer { font-size: 28px; margin-top: 20px; color: red; }
+</style>
+</head>
+<body>
+<h1>英検1級 二次試験 お題ランダム＆タイマー</h1>
+<button onclick="showTopic()">お題を出す</button>
+<button onclick="startPreparation()">準備タイマー開始（1分）</button>
+<button onclick="startSpeech()">スピーチタイマー開始（2分）</button>
+
+<div id="topic">ここにお題が表示されます</div>
+<div id="timer">00:00</div>
+
+<script>
+const topics = [
+  "Can child labor be prevented?",
+  "Is economic globalization beneficial to developing countries?",
+  "Should space exploration be expanded?",
+  "Can technology solve environmental problems?",
+  "Is freedom of the press necessary for a democratic society?",
+  "Should the use of nuclear power be promoted?",
+  "Is AI a threat to human jobs?",
+  "Can world poverty be eliminated?",
+  "Is public surveillance justified?",
+  "Should developed countries increase foreign aid?",
+  "Is online education as effective as traditional education?",
+  "Can renewable energy replace fossil fuels?",
+  "Should governments invest more in space research?",
+  "Can science and technology solve all social problems?",
+  "Is social media beneficial to society?"
+];
+
+let timerInterval;
+
+function showTopic() {
+  const randomIndex = Math.floor(Math.random() * topics.length);
+  document.getElementById('topic').innerText = topics[randomIndex];
+}
+
+function startPreparation() {
+  startTimer(60);
+}
+
+function startSpeech() {
+  startTimer(120);
+}
+
+function startTimer(seconds) {
+  clearInterval(timerInterval);
+  let timeLeft = seconds;
+  displayTime(timeLeft);
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    displayTime(timeLeft);
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      alert("時間です！");
+    }
+  }, 1000);
+}
+
+function displayTime(seconds) {
+  const min = String(Math.floor(seconds / 60)).padStart(2, '0');
+  const sec = String(seconds % 60).padStart(2, '0');
+  document.getElementById('timer').innerText = `${min}:${sec}`;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英検1級 二次試験お題ランダム＆タイマー</title>
+<style>
+  body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f0f0f0; }
+  h1 { font-size: 24px; margin-bottom: 20px; }
+  #topic, #topics { font-size: 20px; margin: 20px 0; background: white; padding: 15px; border-radius: 8px; }
+  button { font-size: 16px; padding: 10px 20px; margin: 10px; border-radius: 5px; }
+  #timer { font-size: 28px; margin-top: 20px; color: red; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>英検1級 二次試験 お題ランダム＆タイマー</h1>
+<button onclick="showTopic()">お題を1つ出す</button>
+<button onclick="showFiveTopics()">5つのお題を出す（本番形式）</button>
+<button onclick="startPreparation()">準備タイマー開始（1分）</button>
+<button onclick="startSpeech()">スピーチタイマー開始（2分）</button>
+
+<div id="topic">ここにお題が表示されます</div>
+<div id="topics"></div>
+<div id="timer" onclick="toggleTimer()">00:00</div>
+
+<script>
+const topics = [
+// もともとのお題
+"Can child labor be prevented?",
+"Is economic globalization beneficial to developing countries?",
+"Should space exploration be expanded?",
+"Can technology solve environmental problems?",
+"Is freedom of the press necessary for a democratic society?",
+"Should the use of nuclear power be promoted?",
+"Is AI a threat to human jobs?",
+"Can world poverty be eliminated?",
+"Is public surveillance justified?",
+"Should developed countries increase foreign aid?",
+"Is online education as effective as traditional education?",
+"Can renewable energy replace fossil fuels?",
+"Should governments invest more in space research?",
+"Can science and technology solve all social problems?",
+"Is social media beneficial to society?",
+
+// カウンターアタックトレーニングから抜粋（以下一部、必要なら全部追加可能）
+"Are senior citizens discriminated against in today’s society?",
+"Is information technology changing news media for the better?",
+"Should there be more decentralization of government?",
+"Are space exploration programs worth their cost?",
+"Should more be done to help the working poor?",
+"Surveillance cameras should be installed in all public places",
+"Can businesses be ethical and still be profitable?",
+"Has the influence of Western values weakened Japanese identity?",
+"Are current global agricultural practices sustainable?",
+"Are the police doing enough to combat crime?",
+// ... 必要ならここに全ページ分追加可能 ...
+];
+
+let timerInterval;
+let timeLeft = 0;
+let isPaused = false;
+
+function showTopic() {
+  const randomIndex = Math.floor(Math.random() * topics.length);
+  document.getElementById('topic').innerText = topics[randomIndex];
+  document.getElementById('topics').innerText = '';
+}
+
+function showFiveTopics() {
+  const shuffled = [...topics].sort(() => 0.5 - Math.random());
+  const selected = shuffled.slice(0, 5);
+  document.getElementById('topics').innerHTML = "<b>Your 5 topics:</b><br>" + selected.map((t, i) => `${i+1}. ${t}`).join('<br>');
+  document.getElementById('topic').innerText = '';
+}
+
+function startPreparation() {
+  startTimer(60);
+}
+
+function startSpeech() {
+  startTimer(120);
+}
+
+function startTimer(seconds) {
+  clearInterval(timerInterval);
+  timeLeft = seconds;
+  isPaused = false;
+  displayTime(timeLeft);
+  timerInterval = setInterval(countdown, 1000);
+}
+
+function countdown() {
+  if (!isPaused) {
+    timeLeft--;
+    displayTime(timeLeft);
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      alert("時間です！");
+    }
+  }
+}
+
+function displayTime(seconds) {
+  const min = String(Math.floor(seconds / 60)).padStart(2, '0');
+  const sec = String(seconds % 60).padStart(2, '0');
+  document.getElementById('timer').innerText = `${min}:${sec}`;
+}
+
+function toggleTimer() {
+  if (timeLeft > 0) {
+    isPaused = !isPaused;
+  }
+}
+</script>
+
+</body>
+</html>

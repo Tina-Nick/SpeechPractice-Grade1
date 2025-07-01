@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英検1級 二次試験お題ランダム＆タイマー</title>
+<style>
+  body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f0f0f0; }
+  h1 { font-size: 24px; margin-bottom: 20px; }
+  #topic, #topics { font-size: 20px; margin: 20px 0; background: white; padding: 15px; border-radius: 8px; }
+  button { font-size: 16px; padding: 10px 20px; margin: 10px; border-radius: 5px; }
+  #timer { font-size: 28px; margin-top: 20px; color: red; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>英検1級 二次試験 お題ランダム＆タイマー</h1>
+<button onclick="showTopic()">お題を1つ出す</button>
+<button onclick="showFiveTopics()">5つのお題を出す（本番形式）</button>
+<button onclick="startPreparation()">準備タイマー開始（1分）</button>
+<button onclick="startSpeech()">スピーチタイマー開始（2分）</button>
+
+<div id="topic">ここにお題が表示されます</div>
+<div id="topics"></div>
+<div id="timer" onclick="toggleTimer()">00:00</div>
+
+<script>
+const topics = [
+"Can child labor be prevented?",
+"Is economic globalization beneficial to developing countries?",
+"Should space exploration be expanded?",
+"Can technology solve environmental problems?",
+"Is freedom of the press necessary for a democratic society?",
+"Should the use of nuclear power be promoted?",
+"Is AI a threat to human jobs?",
+"Can world poverty be eliminated?",
+"Is public surveillance justified?",
+"Should developed countries increase foreign aid?",
+"Is online education as effective as traditional education?",
+"Can renewable energy replace fossil fuels?",
+"Should governments invest more in space research?",
+"Can science and technology solve all social problems?",
+"Is social media beneficial to society?",
+"Are senior citizens discriminated against in today’s society?",
+"Is information technology changing news media for the better?",
+"Should there be more decentralization of government?",
+"Are space exploration programs worth their cost?",
+"Should more be done to help the working poor?",
+"Surveillance cameras should be installed in all public places",
+"Can businesses be ethical and still be profitable?",
+"Has the influence of Western values weakened Japanese identity?",
+"Are current global agricultural practices sustainable?",
+"Are the police doing enough to combat crime?",
+"Will the increasing reliance on robots and computers pose a threat to society?",
+"Is the Japanese healthcare system a good model for other countries?",
+"Voting should be mandatory",
+"Is foreign aid the best way to promote economic growth in developing countries?",
+"Should all nations have the right to develop nuclear weapons?",
+"Is world peace an achievable goal in the modern world?",
+"Multinational corporations have become too powerful?",
+"Do the advantages of ecotourism outweigh the disadvantages?",
+"Do the values of today’s company employees differ from those of past generations?",
+"Are the threats to society posed by the Internet being taken seriously enough?",
+"Is accepting immigrants a solution to an aging society issue?",
+"Is the U.S. still influential to world politics?",
+"Can technology solve the issue of global warming?",
+"Should the government provide funding to young people who start their own business?",
+"Is reducing poverty the best way to tackle crime?",
+"Should people be prepared to change their lifestyles to help protect the environment?",
+"Does the Internet encourage people to express extreme attitudes?",
+"Should the government do more to protect people from the threat of terrorism?",
+"Is international aid the best way to help poor countries develop?",
+"Is Japan likely to become more multicultural in the future?",
+"Should children be taught ethics in primary schools?",
+"Is Japan too dependent on exports?",
+"Should university education be optional or mandatory?",
+"Does globalization threaten to diminish cultural diversity?",
+"Which is more important for human beings, economic growth or heritage sites?",
+"Does the government do enough to protect animal rights?",
+"Can Japan make a good relationship with North Korea?",
+"Do you think humans will be able to colonize other planets in the future?",
+"Does the government invade public life too much?",
+"Is domestic terrorism more serious than terrorism from abroad?",
+"Should governments be responsible to ensure health systems?",
+"The internet is necessary in life?",
+"Are competitions intensifying in the world?",
+"Should teachers discipline students more flexibly?"
+];
+
+let timerInterval;
+let timeLeft = 0;
+let isPaused = false;
+
+function showTopic() {
+  const randomIndex = Math.floor(Math.random() * topics.length);
+  document.getElementById('topic').innerText = topics[randomIndex];
+  document.getElementById('topics').innerText = '';
+}
+
+function showFiveTopics() {
+  const shuffled = [...topics].sort(() => 0.5 - Math.random());
+  const selected = shuffled.slice(0, 5);
+  document.getElementById('topics').innerHTML = "<b>Your 5 topics:</b><br>" + selected.map((t, i) => `${i+1}. ${t}`).join('<br>');
+  document.getElementById('topic').innerText = '';
+}
+
+function startPreparation() {
+  startTimer(60);
+}
+
+function startSpeech() {
+  startTimer(120);
+}
+
+function startTimer(seconds) {
+  clearInterval(timerInterval);
+  timeLeft = seconds;
+  isPaused = false;
+  displayTime(timeLeft);
+  timerInterval = setInterval(countdown, 1000);
+}
+
+function countdown() {
+  if (!isPaused) {
+    timeLeft--;
+    displayTime(timeLeft);
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      alert("時間です！");
+    }
+  }
+}
+
+function displayTime(seconds) {
+  const min = String(Math.floor(seconds / 60)).padStart(2, '0');
+  const sec = String(seconds % 60).padStart(2, '0');
+  document.getElementById('timer').innerText = `${min}:${sec}`;
+}
+
+function toggleTimer() {
+  if (timeLeft > 0) {
+    isPaused = !isPaused;
+  }
+}
+</script>
+
+</body>
+</html>

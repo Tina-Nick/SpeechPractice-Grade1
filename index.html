@@ -7,18 +7,20 @@
 <style>
   body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f0f0f0; }
   h1 { font-size: 24px; margin-bottom: 20px; }
-  #topic { font-size: 20px; margin: 20px 0; background: white; padding: 15px; border-radius: 8px; }
+  #topic, #topics { font-size: 20px; margin: 20px 0; background: white; padding: 15px; border-radius: 8px; }
   button { font-size: 16px; padding: 10px 20px; margin: 10px; border-radius: 5px; }
   #timer { font-size: 28px; margin-top: 20px; color: red; }
 </style>
 </head>
 <body>
 <h1>英検1級 二次試験 お題ランダム＆タイマー</h1>
-<button onclick="showTopic()">お題を出す</button>
+<button onclick="showTopic()">お題を1つ出す</button>
+<button onclick="showFiveTopics()">5つのお題を出す（本番形式）</button>
 <button onclick="startPreparation()">準備タイマー開始（1分）</button>
 <button onclick="startSpeech()">スピーチタイマー開始（2分）</button>
 
 <div id="topic">ここにお題が表示されます</div>
+<div id="topics"></div>
 <div id="timer">00:00</div>
 
 <script>
@@ -45,6 +47,14 @@ let timerInterval;
 function showTopic() {
   const randomIndex = Math.floor(Math.random() * topics.length);
   document.getElementById('topic').innerText = topics[randomIndex];
+  document.getElementById('topics').innerText = '';
+}
+
+function showFiveTopics() {
+  const shuffled = [...topics].sort(() => 0.5 - Math.random());
+  const selected = shuffled.slice(0, 5);
+  document.getElementById('topics').innerHTML = "<b>Your 5 topics:</b><br>" + selected.map((t, i) => `${i+1}. ${t}`).join('<br>');
+  document.getElementById('topic').innerText = '';
 }
 
 function startPreparation() {

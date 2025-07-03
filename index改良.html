@@ -1,0 +1,304 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>英検1級 二次試験お題ランダム＆タイマー</title>
+<style>
+  body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f0f0f0; }
+  h1 { font-size: 24px; margin-bottom: 20px; }
+  #topic, #topics { font-size: 20px; margin: 20px 0; background: white; padding: 15px; border-radius: 8px; }
+  button { font-size: 16px; padding: 10px 20px; margin: 10px; border-radius: 5px; }
+  #timer { font-size: 28px; margin-top: 20px; color: red; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>英検1級 二次試験 お題ランダム＆タイマー</h1>
+<button onclick="showTopic()">お題を1つ出す</button>
+<button onclick="showFiveTopics()">5つのお題を出す（本番形式）</button>
+<button onclick="startPreparation()">準備タイマー開始（1分）</button>
+<button onclick="startSpeech()">スピーチタイマー開始（2分）</button>
+<button onclick="resetTimer()">タイマーリセット</button>
+
+<div id="topic">ここにお題が表示されます</div>
+<div id="topics"></div>
+<div id="timer" onclick="toggleTimer()">00:00</div>
+
+<audio id="beep-sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+
+<script>
+const topics = [
+  // Page 1
+  "Are senior citizens discriminated against in today’s society?",
+  "Is information technology changing news media for the better?",
+  "Should there be more decentralization of government?",
+  "Are space exploration programs worth their cost?",
+  "Should more be done to help the working poor?",
+
+  // Page 2
+  "Agree or disagree: Surveillance cameras should be installed in all public places",
+  "Can businesses be ethical and still be profitable?",
+  "Has the influence of Western values weakened Japanese identity?",
+  "Are current global agricultural practices sustainable?",
+  "Are the police doing enough to combat crime?",
+
+  // Page 3
+  "Will the increasing reliance on robots and computers pose a threat to society?",
+  "Is the Japanese healthcare system a good model for other countries?",
+  "Agree or disagree: Voting should be mandatory",
+  "Is foreign aid the best way to promote economic growth in developing countries?",
+  "Should all nations have the right to develop nuclear weapons?",
+
+  // Page 4
+  "Is world peace an achievable goal in the modern world?",
+  "Agree or disagree: Multinational corporations have become too powerful?",
+  "Do the advantages of ecotourism outweigh the disadvantages?",
+  "Do the values of today’s company employees differ from those of past generations?",
+  "Are the threats to society posed by the Internet being taken seriously enough?",
+
+  // Page 5
+  "Is accepting immigrants a solution to an aging society issue?",
+  "Is the U.S. still influential to world politics?",
+  "Can technology solve the issue of global warming?",
+  "Should the government provide funding to young people who start their own business?",
+  "Is reducing poverty the best way to tackle crime?",
+
+  // Page 6
+  "Should people be prepared to change their lifestyles to help protect the environment?",
+  "Does the Internet encourage people to express extreme attitudes?",
+  "Should the government do more to protect people from the threat of terrorism?",
+  "Is international aid the best way to help poor countries develop?",
+  "Is Japan likely to become more multicultural in the future?",
+
+  // Page 7
+  "Should children be taught ethics in primary schools?",
+  "Is Japan too dependent on exports?",
+  "Can child labor be prevented?",
+  "Should university education be optional or mandatory?",
+  "Does globalization threaten to diminish cultural diversity?",
+
+  // Page 8
+  "Which is more important for human beings, economic growth or heritage sites?",
+  "Does the government do enough to protect animal rights?",
+  "Can Japan make a good relationship with North Korea?",
+  "Do you think humans will be able to colonize other planets in the future?",
+  "Does the government invade public life too much?",
+
+  // Page 9
+  "Is domestic terrorism more serious than terrorism from abroad?",
+  "Should governments be responsible to ensure health systems?",
+  "Agree or disagree: The internet is necessary in life?",
+  "Agree or disagree: Are competitions intensifying in the world?",
+  "Should teachers discipline students more flexibly?",
+
+  // Page 10
+  "Agree or disagree: Top global companies have become too powerful?",
+  "Does gambling profit outweigh its risks?",
+  "Agree or disagree: Lifetime employment is obsolete?",
+  "Agree or disagree: Journalism benefits from the rise of social media?",
+  "Will conflicts increase between the nations in the future?",
+
+  // Page 11
+  "Agree or disagree: It is too late to prevent the loss of biodiversity on Earth?",
+  "Should more be done to increase awareness of mental-health issues in Japan?",
+  "What role should the central government play in determining school curriculums?",
+  "Are humans too dependent on science to solve society's problems?",
+  "Will the gap between the rich and the poor inevitably increase in today's globalized world?",
+
+  // Page 12
+  "Is enough being done to protect children facing neglect?",
+  "Can Japan’s labor market stay healthy in the 21st century?",
+  "Agree or disagree: The death penalty deters people from committing crimes?",
+  "Do labor unions have an important role in the business world today?",
+  "Is world peace an achievable goal?",
+
+  // Page 13
+  "Is it worthwhile to rehabilitate prisoners?",
+  "Should there be more centralization of politics?",
+  "Is Japan doing enough to support people with disabilities?",
+  "Agree or disagree: The tabloid journalism exaggerates the problem of celebrities?",
+  "Are private language schools worth your costs?",
+
+  // Page 14
+  "Are terrorist movements an effective way to bring about change in society?",
+  "Should the tobacco industry be more tightly regulated?",
+  "Should jury duty play an important role in the Japanese judicial system?",
+  "Should all nations have the right to have nuclear weapons for self-defense?",
+  "Can professional sports be both profitable and ethical?",
+
+  // Page 15
+  "Is it possible for businesses to be both commercially successful and morally responsible?",
+  "Agree or disagree: Countries that provide foreign aid should have a say in how it is used?",
+  "Are the effects of the loss of diversity overexaggerated?",
+  "Would a universal basic income for adults affect their motivation to work?",
+  "Is artistic creativity under threat from artificial intelligence?",
+
+  // Page 16
+  "Will cyberattacks become a greater threat than traditional forms of warfare?",
+  "Is there enough regulation of the banking sector?",
+  "Agree or disagree: More should be done to get young people interested in literature?",
+  "Does any country have the right to interfere with the affairs of another?",
+  "Is it impossible for news reporting to be free from bias?",
+
+  // Page 17
+  "Should the media be given complete freedom to criticize politicians?",
+  "Should young people be given greater financial support to start their own businesses?",
+  "Is artistic creativity valued enough in modern society?",
+  "Agree or disagree: For-profit zoos should be closed down?",
+  "Are companies doing enough to eliminate discrimination in the workplace?",
+
+  // Page 18
+  "Does environmental activism have a positive effect?",
+  "Can big business be relied on to revitalize rural economies?",
+  "Is cultural identity important in today’s global world?",
+  "Agree or disagree: International alliances are the key to world peace?",
+  "Has the convenience of online shopping made people more materialistic?",
+
+  // Page 19
+  "Has Japan lost its technological advantage in the business world?",
+  "Agree or disagree: Law-enforcement agencies are underfunded in the fight against crime?",
+  "Does the mass media exaggerate the popularity of extremist opinions?",
+  "Are shrinking populations in some countries potentially a good thing for the planet’s future?",
+  "Can censorship of the arts ever be justified?",
+
+  // Page 20
+  "Can cheating in professional sports ever be eliminated?",
+  "Agree or disagree: Terminally ill patients should be allowed to choose to end their lives?",
+  "Should international aid be administered through private rather than government agencies?",
+  "Should adolescent criminals be tried in the same way as adult criminals?",
+  "Can social movements for change have any real impact?",
+
+  // Page 21
+  "Do large corporations have too much influence on government policies?",
+  "Are growing populations an advantage or a disadvantage for developing countries?",
+  "Agree or disagree: The illegal trade in wild species is impossible to stop?",
+  "Is Japan doing enough to protect its cultural heritage?",
+  "Do developed countries have a moral responsibility to lead the way in renewable energy research?",
+
+  // Page 22
+  "Is the global agriculture industry too dependent on the use of chemicals?",
+  "Should the gap between the rich and the poor in modern society be a bigger concern?",
+  "Are company hiring processes too focused on people’s academic backgrounds?",
+  "Agree or disagree: The advantages of megacities outweigh the disadvantages?",
+  "Is the problem of stress in modern workplaces being dealt with sufficiently?",
+
+  // Page 23
+  "Are people today becoming less tolerant of different beliefs and cultures?",
+  "Agree or disagree: Some professional athletes’ salaries have become too high to justify?",
+  "Is it possible for consumers to completely avoid companies involved in unethical activities?",
+  "Should the government provide more funds to boost the economies of rural areas?",
+  "Should punishments for people who commit financial crimes be made stricter?",
+
+  // Page 24
+  "Has the global war on illegal drugs been lost?",
+  "Do young people today face more societal pressures than young people did in the past?",
+  "Is democracy facing more challenges today than it did in the 20th century?",
+  "Agree or disagree: Japan’s low birthrate should be treated as a national crisis?",
+  "Have industrialized nations made meaningful progress regarding climate change?",
+
+  // Page 25
+  "Does the economic future of Japan depend on labor from abroad?",
+  "Are international laws biased in favor of wealthy countries?",
+  "Agree or disagree: Promotion in the workplace should be based primarily on seniority?",
+  "Should teachers be responsible for both the emotional development and academic development of students?",
+  "Is scientific research the key to improving human health in the future?",
+
+  // Page 26
+  "Should there be a mandatory retirement age for politicians?",
+  "Can the military invasion of other countries ever be justified?",
+  "Have internships become a way for companies to exploit young people?",
+  "Agree or disagree: Stem-cell research will revolutionize medical science?",
+  "Should the government do more to promote free trade?",
+
+  // Page 27
+  "Would Japanese society benefit from having immigrants?",
+  "Is it possible for developing countries to improve their current standards of living?",
+  "Agree or disagree: Translation technology is undermining the role of language schools?",
+  "Will Artificial Intelligence become a greater threat to unemployment in the future?",
+  "Are parents in Japan ready to deal with bullying at their kids’ schools?",
+
+  // Page 28
+  "Will democratic nations dominate the world stage in the future?",
+  "Is enough being done to diminish poverty in modern society?",
+  "Has the quality of education improved in the digital age?",
+  "Agree or disagree: Provision of school meals should be banned?",
+  "Should the study of morals be a higher priority among public workers?"
+];
+
+let timerInterval;
+let timeLeft = 0;
+let isPaused = false;
+let isRunning = false;
+
+function showTopic() {
+  const randomIndex = Math.floor(Math.random() * topics.length);
+  document.getElementById('topic').innerText = topics[randomIndex];
+  document.getElementById('topics').innerText = '';
+}
+
+function showFiveTopics() {
+  const shuffled = [...topics].sort(() => 0.5 - Math.random());
+  const selected = shuffled.slice(0, 5);
+  document.getElementById('topics').innerHTML = "<b>Your 5 topics:</b><br>" + selected.map((t, i) => `${i+1}. ${t}`).join('<br>');
+  document.getElementById('topic').innerText = '';
+}
+
+function startPreparation() {
+  if (isRunning) return;
+  startTimer(60);
+}
+
+function startSpeech() {
+  if (isRunning) return;
+  startTimer(120);
+}
+
+function startTimer(seconds) {
+  clearInterval(timerInterval);
+  timeLeft = seconds;
+  isPaused = false;
+  isRunning = true;
+  displayTime(timeLeft);
+  timerInterval = setInterval(countdown, 1000);
+}
+
+function countdown() {
+  if (!isPaused) {
+    timeLeft--;
+    displayTime(timeLeft);
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      playSound();
+      alert("時間です！");
+      isRunning = false;
+    }
+  }
+}
+
+function displayTime(seconds) {
+  const min = String(Math.floor(seconds / 60)).padStart(2, '0');
+  const sec = String(seconds % 60).padStart(2, '0');
+  document.getElementById('timer').innerText = `${min}:${sec}`;
+}
+
+function toggleTimer() {
+  if (isRunning && timeLeft > 0) {
+    isPaused = !isPaused;
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timeLeft = 0;
+  isPaused = false;
+  isRunning = false;
+  displayTime(0);
+}
+
+function playSound() {
+  document.getElementById('beep-sound').play();
+}
+</script>
+
+</body>
+</html>
